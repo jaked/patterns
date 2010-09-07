@@ -2,6 +2,9 @@
 
 open Camlp4.PreCast.Syntax
 
+(* OCaml > 3.10.2 has built-in lazy patterns *)
+DELETE_RULE Gram patt: "lazy"; SELF END
+
 EXTEND Gram
   patt: LEVEL "simple"
   [LEFTA ["lazy"; p = SELF -> <:patt< $uid:"lazy"$ $p$ >>]];
