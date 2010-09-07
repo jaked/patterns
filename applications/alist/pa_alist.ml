@@ -15,21 +15,31 @@ object
   inherit Patterns.extension
   method translate v = function
     | <:patt@loc< $uid:"alist"$ $l$ >> ->
-      let l = Ast.list_of_patt l [] in
-      let vs =
+      let l =
         List.map
           (function
-             | Ast.PaOlbi (_, _, _, e) ->
-                 <:expr< try Some (List.assoc $e$ $v$) with Not_found -> None >>
+             | Ast.PaOlbi (_, _, p, e) -> p, e
              | _ -> assert false)
+          (Ast.list_of_patt l []) in
+      let vs =
+        List.map
+          (fun (_, e) ->
+             <:expr< try Some (List.assoc $e$ $v$) with Not_found -> None >>)
           l in
       let ps =
         List.map
-          (function
-             | Ast.PaOlbi (_, _, p, _) ->
-                 <:patt< Some $p$ >>
-             | _ -> assert false)
+          (fun (p, _) -> <:patt< Some $p$ >>)
           l in
-      Some (<:expr< ($tup:Ast.exCom_of_list vs$) >>, <:patt< ($tup:Ast.paCom_of_list ps$) >>)
+      let vt =
+        match vs with
+          | [] -> <:expr< () >>
+          | [ v ] -> v
+          | _ -> <:expr< $tup:Ast.exCom_of_list vs$ >> in
+      let pt =
+        match ps with
+          | [] -> <:patt< () >>
+          | [ p ] -> p
+          | _ -> <:patt< $tup:Ast.paCom_of_list ps$ >> in
+      Some (vt, pt)
     | _ -> None
 end
