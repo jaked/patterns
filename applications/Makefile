@@ -1,4 +1,4 @@
-DIRS=lazy object negative conjunctive n+k combination
+DIRS=lazy object negative conjunctive n+k alist combination
 
 all:
 	@for d in $(DIRS); do (cd $$d && $(MAKE)); done
