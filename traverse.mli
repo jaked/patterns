@@ -36,5 +36,13 @@ object ('self)
   method sig_item       : sig_item -> 'self * sig_item
   method str_item       : str_item -> 'self * str_item
   method with_constr    : with_constr -> 'self * with_constr
+
+  method rec_flag       : rec_flag -> 'self * rec_flag
+  method direction_flag : direction_flag -> 'self * direction_flag
+  method mutable_flag   : mutable_flag -> 'self * mutable_flag
+  method private_flag   : private_flag -> 'self * private_flag
+  method virtual_flag   : virtual_flag -> 'self * virtual_flag
+  method row_var_flag   : row_var_flag -> 'self * row_var_flag
+  method override_flag  : override_flag -> 'self * override_flag
 end
 

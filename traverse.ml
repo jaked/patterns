@@ -7,7 +7,7 @@
    /usr/local/ocaml/bin/camlp4of -filter fold traverse.ml
  *)
 open Camlp4.PreCast.Syntax.Ast
-
+  
 class fold_map =
   object ((o : 'self_type))
     method string : string -> ('self_type * string) = o#unknown
@@ -34,6 +34,14 @@ class fold_map =
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#ident _x_i1 in
           let (o, _x_i2) = o#ident _x_i2 in (o, (WcMod (_x, _x_i1, _x_i2)))
+      | WcTyS (_x, _x_i1, _x_i2) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#ctyp _x_i1 in
+          let (o, _x_i2) = o#ctyp _x_i2 in (o, (WcTyS (_x, _x_i1, _x_i2)))
+      | WcMoS (_x, _x_i1, _x_i2) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#ident _x_i1 in
+          let (o, _x_i2) = o#ident _x_i2 in (o, (WcMoS (_x, _x_i1, _x_i2)))
       | WcAnd (_x, _x_i1, _x_i2) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#with_constr _x_i1 in
@@ -42,6 +50,12 @@ class fold_map =
       | WcAnt (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (WcAnt (_x, _x_i1)))
+      
+    method virtual_flag : virtual_flag -> ('self_type * virtual_flag) =
+      function
+      | ViVirtual -> (o, ViVirtual)
+      | ViNil -> (o, ViNil)
+      | ViAnt _x -> let (o, _x) = o#string _x in (o, (ViAnt _x))
       
     method str_item : str_item -> ('self_type * str_item) =
       function
@@ -100,7 +114,7 @@ class fold_map =
           let (o, _x_i1) = o#ctyp _x_i1 in (o, (StTyp (_x, _x_i1)))
       | StVal (_x, _x_i1, _x_i2) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#meta_bool _x_i1 in
+          let (o, _x_i1) = o#rec_flag _x_i1 in
           let (o, _x_i2) = o#binding _x_i2 in (o, (StVal (_x, _x_i1, _x_i2)))
       | StAnt (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
@@ -164,6 +178,18 @@ class fold_map =
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (SgAnt (_x, _x_i1)))
       
+    method row_var_flag : row_var_flag -> ('self_type * row_var_flag) =
+      function
+      | RvRowVar -> (o, RvRowVar)
+      | RvNil -> (o, RvNil)
+      | RvAnt _x -> let (o, _x) = o#string _x in (o, (RvAnt _x))
+      
+    method rec_flag : rec_flag -> ('self_type * rec_flag) =
+      function
+      | ReRecursive -> (o, ReRecursive)
+      | ReNil -> (o, ReNil)
+      | ReAnt _x -> let (o, _x) = o#string _x in (o, (ReAnt _x))
+      
     method rec_binding : rec_binding -> ('self_type * rec_binding) =
       function
       | RbNil _x -> let (o, _x) = o#loc _x in (o, (RbNil _x))
@@ -179,6 +205,12 @@ class fold_map =
       | RbAnt (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (RbAnt (_x, _x_i1)))
+      
+    method private_flag : private_flag -> ('self_type * private_flag) =
+      function
+      | PrPrivate -> (o, PrPrivate)
+      | PrNil -> (o, PrNil)
+      | PrAnt _x -> let (o, _x) = o#string _x in (o, (PrAnt _x))
       
     method patt : patt -> ('self_type * patt) =
       function
@@ -272,6 +304,21 @@ class fold_map =
       | PaVrn (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (PaVrn (_x, _x_i1)))
+      | PaLaz (_x, _x_i1) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#patt _x_i1 in (o, (PaLaz (_x, _x_i1)))
+      
+    method override_flag : override_flag -> ('self_type * override_flag) =
+      function
+      | OvOverride -> (o, OvOverride)
+      | OvNil -> (o, OvNil)
+      | OvAnt _x -> let (o, _x) = o#string _x in (o, (OvAnt _x))
+      
+    method mutable_flag : mutable_flag -> ('self_type * mutable_flag) =
+      function
+      | MuMutable -> (o, MuMutable)
+      | MuNil -> (o, MuNil)
+      | MuAnt _x -> let (o, _x) = o#string _x in (o, (MuAnt _x))
       
     method module_type : module_type -> ('self_type * module_type) =
       function
@@ -325,6 +372,9 @@ class fold_map =
           let (o, _x_i1) = o#module_expr _x_i1 in
           let (o, _x_i2) = o#module_type _x_i2
           in (o, (MeTyc (_x, _x_i1, _x_i2)))
+      | MePkg (_x, _x_i1) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#expr _x_i1 in (o, (MePkg (_x, _x_i1)))
       | MeAnt (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (MeAnt (_x, _x_i1)))
@@ -483,7 +533,7 @@ class fold_map =
           let (o, _x_i1) = o#string _x_i1 in
           let (o, _x_i2) = o#expr _x_i2 in
           let (o, _x_i3) = o#expr _x_i3 in
-          let (o, _x_i4) = o#meta_bool _x_i4 in
+          let (o, _x_i4) = o#direction_flag _x_i4 in
           let (o, _x_i5) = o#expr _x_i5
           in (o, (ExFor (_x, _x_i1, _x_i2, _x_i3, _x_i4, _x_i5)))
       | ExFun (_x, _x_i1) ->
@@ -516,7 +566,7 @@ class fold_map =
           let (o, _x_i1) = o#expr _x_i1 in (o, (ExLaz (_x, _x_i1)))
       | ExLet (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#meta_bool _x_i1 in
+          let (o, _x_i1) = o#rec_flag _x_i1 in
           let (o, _x_i2) = o#binding _x_i2 in
           let (o, _x_i3) = o#expr _x_i3
           in (o, (ExLet (_x, _x_i1, _x_i2, _x_i3)))
@@ -587,6 +637,23 @@ class fold_map =
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#expr _x_i1 in
           let (o, _x_i2) = o#expr _x_i2 in (o, (ExWhi (_x, _x_i1, _x_i2)))
+      | ExOpI (_x, _x_i1, _x_i2) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#ident _x_i1 in
+          let (o, _x_i2) = o#expr _x_i2 in (o, (ExOpI (_x, _x_i1, _x_i2)))
+      | ExFUN (_x, _x_i1, _x_i2) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#string _x_i1 in
+          let (o, _x_i2) = o#expr _x_i2 in (o, (ExFUN (_x, _x_i1, _x_i2)))
+      | ExPkg (_x, _x_i1) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#module_expr _x_i1 in (o, (ExPkg (_x, _x_i1)))
+      
+    method direction_flag : direction_flag -> ('self_type * direction_flag) =
+      function
+      | DiTo -> (o, DiTo)
+      | DiDownto -> (o, DiDownto)
+      | DiAnt _x -> let (o, _x) = o#string _x in (o, (DiAnt _x))
       
     method ctyp : ctyp -> ('self_type * ctyp) =
       function
@@ -633,7 +700,7 @@ class fold_map =
       | TyObj (_x, _x_i1, _x_i2) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#ctyp _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2
+          let (o, _x_i2) = o#row_var_flag _x_i2
           in (o, (TyObj (_x, _x_i1, _x_i2)))
       | TyOlb (_x, _x_i1, _x_i2) ->
           let (o, _x) = o#loc _x in
@@ -720,6 +787,9 @@ class fold_map =
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#ctyp _x_i1 in
           let (o, _x_i2) = o#ctyp _x_i2 in (o, (TyOfAmp (_x, _x_i1, _x_i2)))
+      | TyPkg (_x, _x_i1) ->
+          let (o, _x) = o#loc _x in
+          let (o, _x_i1) = o#module_type _x_i1 in (o, (TyPkg (_x, _x_i1)))
       | TyAnt (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in (o, (TyAnt (_x, _x_i1)))
@@ -729,7 +799,7 @@ class fold_map =
       | CtNil _x -> let (o, _x) = o#loc _x in (o, (CtNil _x))
       | CtCon (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#meta_bool _x_i1 in
+          let (o, _x_i1) = o#virtual_flag _x_i1 in
           let (o, _x_i2) = o#ident _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CtCon (_x, _x_i1, _x_i2, _x_i3)))
@@ -774,36 +844,40 @@ class fold_map =
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#ctyp _x_i1 in
           let (o, _x_i2) = o#ctyp _x_i2 in (o, (CrCtr (_x, _x_i1, _x_i2)))
-      | CrInh (_x, _x_i1, _x_i2) ->
+      | CrInh (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#class_expr _x_i1 in
-          let (o, _x_i2) = o#string _x_i2 in (o, (CrInh (_x, _x_i1, _x_i2)))
+          let (o, _x_i1) = o#override_flag _x_i1 in
+          let (o, _x_i2) = o#class_expr _x_i2 in
+          let (o, _x_i3) = o#string _x_i3
+          in (o, (CrInh (_x, _x_i1, _x_i2, _x_i3)))
       | CrIni (_x, _x_i1) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#expr _x_i1 in (o, (CrIni (_x, _x_i1)))
-      | CrMth (_x, _x_i1, _x_i2, _x_i3, _x_i4) ->
+      | CrMth (_x, _x_i1, _x_i2, _x_i3, _x_i4, _x_i5) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
-          let (o, _x_i3) = o#expr _x_i3 in
-          let (o, _x_i4) = o#ctyp _x_i4
-          in (o, (CrMth (_x, _x_i1, _x_i2, _x_i3, _x_i4)))
-      | CrVal (_x, _x_i1, _x_i2, _x_i3) ->
+          let (o, _x_i2) = o#override_flag _x_i2 in
+          let (o, _x_i3) = o#private_flag _x_i3 in
+          let (o, _x_i4) = o#expr _x_i4 in
+          let (o, _x_i5) = o#ctyp _x_i5
+          in (o, (CrMth (_x, _x_i1, _x_i2, _x_i3, _x_i4, _x_i5)))
+      | CrVal (_x, _x_i1, _x_i2, _x_i3, _x_i4) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
-          let (o, _x_i3) = o#expr _x_i3
-          in (o, (CrVal (_x, _x_i1, _x_i2, _x_i3)))
+          let (o, _x_i2) = o#override_flag _x_i2 in
+          let (o, _x_i3) = o#mutable_flag _x_i3 in
+          let (o, _x_i4) = o#expr _x_i4
+          in (o, (CrVal (_x, _x_i1, _x_i2, _x_i3, _x_i4)))
       | CrVir (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
+          let (o, _x_i2) = o#private_flag _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CrVir (_x, _x_i1, _x_i2, _x_i3)))
       | CrVvr (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
+          let (o, _x_i2) = o#mutable_flag _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CrVvr (_x, _x_i1, _x_i2, _x_i3)))
       | CrAnt (_x, _x_i1) ->
@@ -828,20 +902,20 @@ class fold_map =
       | CgMth (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
+          let (o, _x_i2) = o#private_flag _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CgMth (_x, _x_i1, _x_i2, _x_i3)))
       | CgVal (_x, _x_i1, _x_i2, _x_i3, _x_i4) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
-          let (o, _x_i3) = o#meta_bool _x_i3 in
+          let (o, _x_i2) = o#mutable_flag _x_i2 in
+          let (o, _x_i3) = o#virtual_flag _x_i3 in
           let (o, _x_i4) = o#ctyp _x_i4
           in (o, (CgVal (_x, _x_i1, _x_i2, _x_i3, _x_i4)))
       | CgVir (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
           let (o, _x_i1) = o#string _x_i1 in
-          let (o, _x_i2) = o#meta_bool _x_i2 in
+          let (o, _x_i2) = o#private_flag _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CgVir (_x, _x_i1, _x_i2, _x_i3)))
       | CgAnt (_x, _x_i1) ->
@@ -857,7 +931,7 @@ class fold_map =
           let (o, _x_i2) = o#expr _x_i2 in (o, (CeApp (_x, _x_i1, _x_i2)))
       | CeCon (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#meta_bool _x_i1 in
+          let (o, _x_i1) = o#virtual_flag _x_i1 in
           let (o, _x_i2) = o#ident _x_i2 in
           let (o, _x_i3) = o#ctyp _x_i3
           in (o, (CeCon (_x, _x_i1, _x_i2, _x_i3)))
@@ -868,7 +942,7 @@ class fold_map =
           in (o, (CeFun (_x, _x_i1, _x_i2)))
       | CeLet (_x, _x_i1, _x_i2, _x_i3) ->
           let (o, _x) = o#loc _x in
-          let (o, _x_i1) = o#meta_bool _x_i1 in
+          let (o, _x_i1) = o#rec_flag _x_i1 in
           let (o, _x_i2) = o#binding _x_i2 in
           let (o, _x_i3) = o#class_expr _x_i3
           in (o, (CeLet (_x, _x_i1, _x_i2, _x_i3)))

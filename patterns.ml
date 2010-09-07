@@ -242,10 +242,10 @@ object (self : 'self)
         let s, bindings = fresh#binding bindings in
         let _, e        = fresh#expr e in
           begin match r, s#pending with
-            | Ast.BTrue,  `Bindings _ -> 
+            | Ast.ReRecursive, `Bindings _ -> 
                 Utils.fatal_error (Ast.loc_of_binding bindings)
                   "Special patterns are not allowed in `let rec' bindings"
-            | Ast.BFalse, `Bindings bs -> 
+            | Ast.ReNil, `Bindings bs -> 
                 let e = 
                   List.fold_right (fun (p,e) k -> <:expr< let $p$ = $e$ in $k$ >>) bs e
                 in <:expr< let         $bindings$ in $e$ >>
@@ -317,10 +317,10 @@ object (self : 'self)
       let s, bindings = fresh#binding bindings in
       let _, ce       = fresh#class_expr ce in
         begin match r, s#pending with
-          | Ast.BTrue, `Bindings _ ->
+          | Ast.ReRecursive, `Bindings _ ->
               Utils.fatal_error (Ast.loc_of_binding bindings)
                 "Special patterns are not allowed in `let rec' bindings"
-          | Ast.BFalse, `Bindings bs -> 
+          | Ast.ReNil, `Bindings bs -> 
               let ce = 
                 List.fold_right (fun (p,e) k -> <:class_expr< let $p$ = $e$ in $k$ >>) bs ce
               in <:class_expr< let         $bindings$ in $ce$ >>
@@ -346,10 +346,10 @@ object (self : 'self)
     | Ast.StVal (loc, r, bindings) ->
       let s, bindings = fresh#binding bindings in
         begin match r, s#pending with
-          | Ast.BTrue, `Bindings _ ->
+          | Ast.ReRecursive, `Bindings _ ->
               Utils.fatal_error (Ast.loc_of_binding bindings)
                 "Special patterns are not allowed in `let rec' bindings"
-          | Ast.BFalse, `Bindings bs -> 
+          | Ast.ReNil, `Bindings bs -> 
               let binds = 
                 List.fold_right (fun (p,e) k -> <:str_item< let $p$ = $e$ ;; $k$ >>) bs <:str_item< >>
               in <:str_item< let         $bindings$ ;; $binds$ >>
