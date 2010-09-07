@@ -1,0 +1,53 @@
+0.4
+
+Changes from 0.3
+
+  * Patterns is now packaged as a library that makes it easy to extend
+    pattern matching.  Lazy patterns are still available, but as an
+    application of the library rather than as a hard-coded extension.
+
+  * Pattern guards are gone for now.  The intention is to restore them
+    in a future release, as an optional package implemented as an
+    application of the library rather than a hardcoded extension.
+
+  * Patterns should now coexist more happily with other extensions.
+
+  * Lots of examples, e.g. an implementation of conjunctive patterns.
+    See the `applications' directory.
+
+  * Everything now works with both original and revised.
+
+  * A number of bug fixes and a more robust, completely functional,
+    implementation.
+
+  * The MIT License is included in the source tarball.  (This is just
+    a packaging change, not a change of license.)
+
+------------------------------------------------------------------------------
+0.3
+
+Changes from 0.2:
+
+  * Lazy patterns
+
+------------------------------------------------------------------------------
+0.2
+
+Changes from 0.1:
+
+  * A new design for pattern guards which allows with-bindings within
+    top-level or-patterns (see the documentation)
+
+  * Fewer warnings in generated code: patterns that cannot fail now
+    generate `let'-bindings rather than `match'-bindings.
+
+  * More efficient code generated in many cases: for example no
+    reference cell is generated when there are no conditional
+    patterns in the `with' guards.
+
+  * Documentation (see http://code.google.com/p/ocaml-patterns/wiki/PatternGuards)
+
+------------------------------------------------------------------------------
+0.1
+
+Initial release

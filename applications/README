@@ -1,0 +1,14 @@
+This directory contains various extensions to OCaml pattern-matching
+implemented using the `patterns' extension for OCaml.
+
+lazy/
+   Pattern-matching for lazy values.
+object/
+   Pattern-matching for objects.
+negative/
+   Negative patterns, which match all but a particular set of values.
+conjunctive/
+   Conjunctive patterns, a generalization of as-patterns.  These are
+   found in F#, and are useful in conjunction with other extensions.
+n+k/
+   The infamous N+K patterns, as found in Haskell.

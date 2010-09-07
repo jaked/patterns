@@ -1,0 +1,17 @@
+OCAMLMAKEFILE = ../../OCamlMakefile
+
+INCDIRS = ../..
+
+USE_CAMLP4 := yes
+
+RESULT = tests
+
+SOURCES := $(TESTS)
+
+PRE_TARGETS := $(patsubst  %.ml,%.cmo,$(SYNTAX_EXTENSION))
+TRASH := $(patsubst  %.ml,%.cmi,$(SYNTAX_EXTENSION))
+
+include $(OCAMLMAKEFILE)
+
+test: $(RESULT)
+	./tests

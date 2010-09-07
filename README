@@ -1,0 +1,34 @@
+Note: you'll need OCaml 3.10.x to compile `patterns'.
+
+Typing `make' in this directory should build object files traverse.cmo
+and patterns.cmo, which form a framework for writing extensions to
+pattern-matching using Camlp4.  Typing `make' in the applications
+directory then builds a number of extensions which use the framework
+to extend OCaml pattern matching.
+
+For example, once you've built the framework and the applications, you
+can use the pa_lazy extension in applications/lazy to extend OCaml
+with "lazy patterns" (i.e. pattern matching against lazy values).  If
+you have a source file "source.ml" which uses lazy patterns then you
+can compile it as follows:
+
+   ocamlc -pp 'camlp4of traverse.cmo patterns.cmo pa_lazy.cmo' source.ml
+
+or, to see the output,
+
+   camlp4of traverse.cmo patterns.cmo pa_lazy.cmo source.ml
+
+If you'd like to check that everything is working, you can run 
+
+   make test
+
+in the applications directory.
+
+Documentation for using `patterns' is available at 
+
+   http://code.google.com/p/ocaml-patterns/
+
+Comments are very welcome.
+
+Jeremy Yallop
+jeremy.yallop@ed.ac.uk
