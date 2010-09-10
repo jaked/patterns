@@ -13,14 +13,21 @@ let test thunk =
 
 module Tests (S : sig end) =
 struct
-  let foo = ["foo", 5; "bar", 6; "baz", 7] in
+  let _ =
+    test
+      (lazy
+         (assert
+            (match ["foo", 5; "bar", 6; "baz", 7] with
+               | alist [ "bar", x; "foo", y ] ->
+                   x - y = 1)))
 
-  test
-    (lazy
-       (assert
-          (match foo with
-             | alist [ "bar", x; "foo", y ] ->
-                 x - y = 1)))
+  let _ =
+    test
+      (lazy
+         (assert
+            (match ["foo", [ "bar", 6 ]] with
+               | alist [ "foo", (alist [ "bar", x ] | alist [ "baz", x ]) ] ->
+                   x = 6)))
 end
 
 let _ =

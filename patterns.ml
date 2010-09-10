@@ -44,6 +44,7 @@ struct
       | <:patt< $p$; $q$ >>    -> split p (fun p -> split q (fun q -> return (<:patt< $p$; $q$ >>)))
       | <:patt< $l$ = $p$ >>   -> split p (fun p -> return (<:patt< $l$ = $p$ >>))
       | <:patt< ($p$ : $t$) >> -> split p (fun p -> return (<:patt< ($p$ : $t$) >>))
+      | Ast.PaOlbi (loc, s, p, e) -> split p (fun p -> return (Ast.PaOlbi (loc, s, p, e))) (* hack for alist *)
       (* nothing else (except labeled patterns) has sub-patterns *)
       | pat -> return pat in 
       split p (fun p -> [p])
