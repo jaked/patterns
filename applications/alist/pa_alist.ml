@@ -9,6 +9,14 @@ EXTEND Gram
      "alist"; "["; l = LIST0 [ e = expr LEVEL "simple"; ","; p = patt LEVEL "simple" -> Ast.PaOlbi (loc, "", p, e) ] SEP ";"; "]" ->
        <:patt< $uid:"alist"$ $Ast.paSem_of_list l$ >>
   ]];
+
+  (*
+    XXX
+
+    the above is a little weird for revised syntax, since tuples are
+    supposed to have parens, but I'm not sure how to have a different
+    rule for original and revised.
+  *)
 END
 
 object
