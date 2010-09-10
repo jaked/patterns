@@ -19,6 +19,16 @@ EXTEND Gram
   *)
 END
 
+let expr_tup_of_list loc = function
+  | [] -> <:expr< () >>
+  | [ v ] -> v
+  | vs -> <:expr< $tup:Ast.exCom_of_list vs$ >>
+
+let patt_tup_of_list loc = function
+  | [] -> <:patt< () >>
+  | [ p ] -> p
+  | ps -> <:patt< $tup:Ast.paCom_of_list ps$ >>
+
 object
   inherit Patterns.extension
   method translate v = function
@@ -32,22 +42,15 @@ object
       let vs =
         List.map
           (fun (_, e) ->
-             <:expr< try Some (List.assoc $e$ $v$) with Not_found -> None >>)
+             <:expr<
+               try Some (List.assoc $e$ $v$)
+               with Not_found -> None
+             >>)
           l in
       let ps =
         List.map
           (fun (p, _) -> <:patt< Some $p$ >>)
           l in
-      let vt =
-        match vs with
-          | [] -> <:expr< () >>
-          | [ v ] -> v
-          | _ -> <:expr< $tup:Ast.exCom_of_list vs$ >> in
-      let pt =
-        match ps with
-          | [] -> <:patt< () >>
-          | [ p ] -> p
-          | _ -> <:patt< $tup:Ast.paCom_of_list ps$ >> in
-      Some (vt, pt)
+      Some (expr_tup_of_list loc vs, patt_tup_of_list loc ps)
     | _ -> None
 end
