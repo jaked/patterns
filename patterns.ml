@@ -87,8 +87,10 @@ object (self)
   method special = special
   method special_within_or = special_within_or
 
+  method set_special sp = {< special = sp >}
+
   method patt = function
-    | p when is_special p -> {< special = true >}
+    | p when is_special p -> (super#patt p)#set_special true
     | <:patt< $l$ | $r$ >> -> let l = self#patt l and r = self#patt r in 
         {< special_within_or = self#special_within_or || l#special || r#special >}
     | p -> super#patt p

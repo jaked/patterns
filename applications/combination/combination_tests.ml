@@ -24,6 +24,15 @@ struct
                 | {| x = lazy ((~ (`A (_+3))) & `A (n+1)); y |} -> n + y
               in f {| x = lazy (`A 2); y = 12 |})
              =  13)))
+
+  (* bug with ors inside special patterns *)
+  let _ =
+    test
+      (lazy
+         (assert
+            (match (lazy (lazy 1)) with
+               | lazy (lazy 1 | lazy 2) -> true
+               | _ -> false)))
 end
 
 let _ =
